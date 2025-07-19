@@ -52,7 +52,6 @@ public class AppointmentService {
         return convertToDTO(savedAppointment);
     }
 
-    // ... Other service methods like cancelAppointment and getPatientHistory
     private AppointmentDTO convertToDTO(Appointment appointment) {
         AppointmentDTO dto = new AppointmentDTO();
         dto.setId(appointment.getId());

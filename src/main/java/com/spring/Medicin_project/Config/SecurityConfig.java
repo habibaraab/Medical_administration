@@ -35,18 +35,15 @@ public class SecurityConfig {
     };
 
     @Bean
-    @Order(1) // هذه السلسلة للـ API الرئيسي وسيتم تقييمها ثانيًا
+    @Order(1)
     public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/api/**") // تطبيق هذه السلسلة فقط على المسارات التي تبدأ بـ /api
+                .securityMatcher("/api/**")
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // السماح بمسارات المصادقة
                         .requestMatchers("/api/auth/**").permitAll()
-                        // تأمين المسارات الأخرى
                         .requestMatchers(HttpMethod.POST, "/api/doctors/**/availability").hasAuthority("ROLE_DOCTOR")
                         .requestMatchers(HttpMethod.POST, "/api/appointments/book").hasAuthority("ROLE_PATIENT")
-                        // أي طلب آخر داخل /api/** يتطلب مصادقة
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -57,11 +54,11 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Order(0) // هذه السلسلة للتوثيق وسيتم تقييمها أولاً
+    @Order(0)
     public SecurityFilterChain swaggerSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher(SWAGGER_WHITE_LIST) // تطبيق هذه السلسلة فقط على مسارات القائمة البيضاء
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()) // السماح بكل الطلبات المطابقة
+                .securityMatcher(SWAGGER_WHITE_LIST) 
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .csrf(csrf -> csrf.disable());
 
         return http.build();
